@@ -1,0 +1,20 @@
+package: github.com/silasdavis/glide-lock-transitive
+import:
+- package: github.com/Masterminds/glide
+  version: v0.12.3
+  subpackages:
+  - action
+  - cache
+  - cfg
+  - msg
+  - path
+  - repo
+  - util
+- package: github.com/jawher/mow.cli
+  version: 8327d12beb75e6471b7f045588acc318d1147146
+
+testImport:
+- package: github.com/stretchr/testify
+  version: v1.1.4
+  subpackages:
+  - assert
