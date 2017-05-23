@@ -18,12 +18,14 @@ when you add or update a direct dependency with glide glide will fetch the lates
 versions it can under the constraints of the dependency's manifest. It _will not_ 
 use the versions your dependency has specified by its lock file. However your
 dependency will have closed into its lock file the versions of its dependencies
-it has been tested with. I almost always want to get the exact versions of my
-transitive dependencies that were specified in the lock file rather than tacitly 
+that it has been tested with. I almost always want to get the exact versions of my
+transitive dependencies that were specified in their parent's lock file rather
+than let glide tacitly upgrade my dependency's dependencies. 
 
 glide-lock-transitive is a tool to pull in a dependency and its transitive 
 dependencies while respecting the explicit (commit hash) versions of those
-transitive dependencies contained in the glide.lock lock file.
+transitive dependencies contained in the glide.lock lock file. As such it
+assumes the dependency in question has a glide.lock file at its root.
 
 It works by fetching the direct dependency and merging its lock file into
 the project's lock file.
