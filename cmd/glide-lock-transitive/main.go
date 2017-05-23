@@ -19,8 +19,6 @@ import (
 	"os"
 	"path/filepath"
 
-	glt "github.com/silasdavis/glide-lock-transitive"
-
 	"github.com/Masterminds/glide/action"
 	"github.com/Masterminds/glide/cache"
 	"github.com/Masterminds/glide/cfg"
@@ -28,7 +26,10 @@ import (
 	"github.com/Masterminds/glide/path"
 	"github.com/Masterminds/glide/repo"
 	"github.com/Masterminds/glide/util"
+	"github.com/silasdavis/glide-lock-transitive/glide"
+	"github.com/silasdavis/glide-lock-transitive/merge"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 func main() {
@@ -58,7 +59,7 @@ func main() {
 				fmt.Printf("Could not read file: %s\n", err)
 				os.Exit(1)
 			}
-			mergedLockFile, err := glt.MergeGlideLockFiles(baseLockFile, overrideLockFile)
+			mergedLockFile, err := merge.GlideLockFiles(baseLockFile, overrideLockFile)
 			if err != nil {
 				fmt.Printf("Could not merge lock files: %s\n", err)
 				os.Exit(1)
@@ -75,9 +76,8 @@ func main() {
 	lockMergeCmd.PersistentFlags().StringVarP(&depGlideLockFile, "override", "o", "", "override lock file")
 
 	// Lock update
-	interactive := false
 	getTransitiveCmd := &cobra.Command{
-		Use:   "get",
+		Use:   "get <package>[@<version>]",
 		Short: "Gets a remote dependency to this project along with its transitive dependencies.",
 		Long: "Gets a remote dependency and its transitive dependencies by adding the remote " +
 			"dependency to this project's glide.yaml and merging the remote dependency's " +
@@ -86,22 +86,27 @@ func main() {
 			if len(args) != 1 {
 				msg.Die("%s requires a single argument of the remote dependency\n", cmd.Name())
 			}
-			rootPackage, _ := util.NormalizeName(args[0])
+
+			// Get root package (that is project)
+			nameAndVersion := strings.Split(args[0], "@")
+			rootPackage, _ := util.NormalizeName(nameAndVersion[0])
+
 			// Add dependency to glide
 			installer := repo.NewInstaller()
-			action.Get(args, installer, false, true, false, !interactive, false)
+			glide.Ensure(args[0], installer)
 			// Now hunt down the repo cache
 			dep := action.EnsureConfig().Imports.Get(rootPackage)
-
 			key, err := cache.Key(dep.Remote())
 			if err != nil {
 				msg.Die("%s requires a single argument of the remote dependency\n", cmd.Name())
 			}
+
 			cacheDir := filepath.Join(cache.Location(), "src", key)
 			repos, err := dep.GetRepo(cacheDir)
 			if err != nil {
 				msg.Die("Could not get repo: %s", err)
 			}
+
 			version, err := repos.Version()
 			if err != nil {
 				msg.Die("Could not get version: %s", err)
@@ -123,7 +128,7 @@ func main() {
 			// Add the package to glide lock too!
 			overrideLockFile.Imports = append(overrideLockFile.Imports, cfg.LockFromDependency(dep))
 
-			mergedLockFile, err := glt.MergeGlideLockFiles(baseLockFile, overrideLockFile)
+			mergedLockFile, err := merge.GlideLockFiles(baseLockFile, overrideLockFile)
 			if err != nil {
 				msg.Die("Could not merge lock files: %s\n", err)
 			}
@@ -135,9 +140,6 @@ func main() {
 			action.Install(installer, false)
 		},
 	}
-
-	getTransitiveCmd.PersistentFlags().BoolVarP(&interactive, "interactive", "i", false,
-		"set dependency verion interactively")
 
 	gltCmd.AddCommand(lockMergeCmd)
 	gltCmd.AddCommand(getTransitiveCmd)

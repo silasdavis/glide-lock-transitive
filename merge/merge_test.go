@@ -72,7 +72,7 @@ func TestMergeGlideLockFiles(t *testing.T) {
 	overrideLockFile, err := cfg.LockfileFromYaml(([]byte)(overrideLockYml))
 	assert.NoError(t, err, "Lockfile should parse")
 
-	mergedLockFile, err := MergeGlideLockFiles(baseLockFile, overrideLockFile)
+	mergedLockFile, err := GlideLockFiles(baseLockFile, overrideLockFile)
 	assert.NoError(t, err, "Lockfiles should merge")
 
 	mergedYmlBytes, err := mergedLockFile.Marshal()

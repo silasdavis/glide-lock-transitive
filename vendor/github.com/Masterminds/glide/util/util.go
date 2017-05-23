@@ -317,6 +317,7 @@ func NormalizeName(name string) (string, string) {
 
 	name = toSlash(name)
 	root := GetRootFromPackage(name)
+	fmt.Printf("\x1b[30m\x1b[46mMARMOT!: root: %s\x1b[0m\n",root)
 	extra := strings.TrimPrefix(name, root)
 	if len(extra) > 0 && extra != "/" {
 		extra = strings.TrimPrefix(extra, "/")
