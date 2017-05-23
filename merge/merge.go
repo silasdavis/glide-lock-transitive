@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package glide_lock_transitive
+package merge
 
 import (
 	"crypto/sha256"
@@ -24,7 +24,7 @@ import (
 
 // Merges two glide lock files together, letting dependencies from 'base' be overwritten
 // by those from 'override'. Returns the resultant glide lock file bytes
-func MergeGlideLockFiles(baseLockFile, overrideLockFile *cfg.Lockfile) (*cfg.Lockfile, error) {
+func GlideLockFiles(baseLockFile, overrideLockFile *cfg.Lockfile) (*cfg.Lockfile, error) {
 	imports := make(map[string]*cfg.Lock, len(baseLockFile.Imports))
 	devImports := make(map[string]*cfg.Lock, len(baseLockFile.DevImports))
 	// Copy the base dependencies into a map

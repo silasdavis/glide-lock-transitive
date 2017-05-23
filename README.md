@@ -36,6 +36,31 @@ go get -u github.com/silasdavis/glide-lock-transitive
 This can be used as a glide plugin by running `glide lock-transitive`, though
 this is identical in effect to running `glide-lock-transitive`.
 
+Typical usage is:
+ 
+```shell
+# To get master
+glide lock-transitive get github.com/foo/bar
+
+# By version tag (when tagged as vX.Y.Z)
+glide lock-transitive get github.com/foo/bar@0.2.4
+
+# Or by commit hash
+glide lock-transitive get github.com/foo/bar@47f5e645123faf25dd8bd109a0f17f77da2892cc
+
+# Or by branch
+glide lock-transitive get github.com/foo/bar@develop
+
+# To get a specific subpackage
+glide lock-transitive get github.com/foo/bar/subpackage@0.2.4
+```
+ 
+All of which will add the foo/bar dependency to the glide.yaml at the version 
+specified and merge in its lock file dependencies into your project's lock file.
+
+There is also a command for merging glide.lock files together manually, which
+can be helpful for composing a lock file from a cascade of overrides.
+
 
 ```shell
 glide-lock-transitive is a plugin for pinning transitive dependencies
