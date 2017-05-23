@@ -6,7 +6,7 @@ or as a 'glide plugin'.
 ## Rationale
 When adding or updating a dependency with glide glide is able to fetch transitive
 dependencies (that is dependencies of dependencies). It will then lock a version
-of any transitive dependencies into the glide.lock lockfile. By doing this a 
+of any transitive dependencies into the glide.lock lock file. By doing this a 
 complete set of dependencies are pinned to specific versions and can be 
 reproducibly installed with `glide install`.
 
@@ -16,21 +16,21 @@ file. The point of the glide manifest file is that it allows to specify versions
 fuzzily; as tag ranges, branches, or not at all (meaning master). This means that
 when you add or update a direct dependency with glide glide will fetch the latest
 versions it can under the constraints of the dependency's manifest. It _will not_ 
-use the versions your dependency has specified by its lockfile. However your
-dependency will have closed into its lockfile the versions of its dependencies
+use the versions your dependency has specified by its lock file. However your
+dependency will have closed into its lock file the versions of its dependencies
 it has been tested with. I almost always want to get the exact versions of my
-transitive dependencies that were specified in the lockfile rather than tacitly 
+transitive dependencies that were specified in the lock file rather than tacitly 
 
 glide-lock-transitive is a tool to pull in a dependency and its transitive 
 dependencies while respecting the explicit (commit hash) versions of those
-transitive dependencies contained in the glide.lock lockfile.
+transitive dependencies contained in the glide.lock lock file.
 
-It works by fetching the direct dependency and merging its lockfile into
-the project's lockfile.
+It works by fetching the direct dependency and merging its lock file into
+the project's lock file.
 
 ## Installation
 
-go get -u github.com/silasdavis/glide-lock-transitive
+`go get -u github.com/silasdavis/glide-lock-transitive`
 
 ## Usage
 This can be used as a glide plugin by running `glide lock-transitive`, though
